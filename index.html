@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <link rel="stylesheet" href="./css/index.css" />
+    <script defer src="./index.js"></script>
+    <title>Транслит</title>
+  </head>
+  <body>
+    <div id="main">
+      <div id="header">T.R.A.N.S.L.I.T.</div>
+      <div id="addTextBlock">
+        <input
+          type="text"
+          id="addTextInput"
+          placeholder="Начните вводить текст"
+        />
+        <button id="addTextButton">Добавить</button>
+      </div>
+      <div id="dictionary">
+        <div class="container ru">
+          <div class="numOfRow ru">1</div>
+          <div class="word ru">Привет👋</div>
+          <img
+            src="./icons/deleteButton.png"
+            alt="deleteButtonRu"
+            class="deleteButton ru"
+          />
+        </div>
+        <div class="container tr">
+          <div class="numOfRow tr">1</div>
+          <div class="word tr">Privet</div>
+          <img
+            src="./icons/deleteButton.png"
+            alt="deleteButtonTr"
+            class="deleteButton tr"
+          />
+        </div>
+      </div>
+      <div id="deleteAllBlock">
+        <img
+          src="./icons/deleteButton.png"
+          alt="deleteAllButtonImg"
+          id="deleteAllButtonImg"
+        />
+        <button id="deleteAllButton">Очистить</button>
+      </div>
+    </div>
+  </body>
+</html>
