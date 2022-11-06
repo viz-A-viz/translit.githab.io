@@ -3,6 +3,7 @@ const addTextInput = document.querySelector('#addTextInput');
 const dictionary = document.querySelector('#dictionary');
 const containerRuList = document.getElementsByClassName('container ru');
 const containerTrList = document.getElementsByClassName('container tr');
+addTextInput.focus();
 
 // Добавляет текст в список по кнопке и по Enter
 addTextButton.addEventListener('click', addText);
@@ -37,14 +38,17 @@ function addText() {
 
   dictionary.appendChild(newContainerRu);
   dictionary.appendChild(newContainerTr);
+
+  addTextInput.value = '';
+  addTextInput.focus();
 }
 
 // Создает контейнер для новой строки
 function createNewContainer() {
   const newContainerRu = document.createElement('div');
-  newContainerRu.setAttribute('class', 'container ru');
-
   const newContainerTr = document.createElement('div');
+
+  newContainerRu.setAttribute('class', 'container ru');
   newContainerTr.setAttribute('class', 'container tr');
 
   return { newContainerRu, newContainerTr };
@@ -93,6 +97,7 @@ function createDeleteButton() {
   elDeleteButtonRu.setAttribute('class', 'deleteButton ru active');
 
   elDeleteButtonRu.addEventListener('click', (event) => {
+    addTextInput.focus();
     event.target.parentElement.nextSibling.remove();
     event.target.parentElement.remove();
     for (let i = 0; i < dictionary.childElementCount; i += 1) {
@@ -107,6 +112,7 @@ function createDeleteButton() {
   elDeleteButtonTr.setAttribute('alt', 'deleteButton tr');
   elDeleteButtonTr.setAttribute('class', 'deleteButton tr active');
   elDeleteButtonTr.addEventListener('click', (event) => {
+    addTextInput.focus();
     event.target.parentElement.previousSibling.remove();
     event.target.parentElement.remove();
     for (let i = 0; i < dictionary.childElementCount; i += 1) {
@@ -127,6 +133,7 @@ deleteAllButton.addEventListener('click', () => {
   document
     .querySelectorAll('#dictionary .container:not(:first-child) + .tr')
     .forEach((el) => el.remove());
+  addTextInput.focus();
 });
 
 // Обрезает текст по количеству символов, по умолчанию 7
@@ -155,7 +162,12 @@ function showPopUp(event) {
   popUp.innerText = event.target.getAttribute('title');
   popUp.style.display = 'block';
   popUp.style.left = `${event.target.getBoundingClientRect().left + 18}px`;
-  popUp.style.top = `${event.target.getBoundingClientRect().top - 32}px`;
+  popUp.style.bottom = `${
+    document.documentElement.clientHeight -
+    event.target.getBoundingClientRect().bottom +
+    32
+  }px`;
+  popUp.style.top = 'auto';
 }
 
 function hidePopUp() {
