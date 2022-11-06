@@ -1,12 +1,28 @@
+import {
+  animationShow,
+  animationAddRow,
+  animationDeleteRow,
+  animationPushButton,
+} from './animations.js';
+import {
+  createNewContainer,
+  createTextBlocks,
+  createNumOfRow,
+  createDeleteButton,
+} from './createFunctions.js';
+
 const addTextButton = document.querySelector('#addTextButton');
-const addTextInput = document.querySelector('#addTextInput');
-const dictionary = document.querySelector('#dictionary');
-const containerRuList = document.getElementsByClassName('container ru');
-const containerTrList = document.getElementsByClassName('container tr');
+export const addTextInput = document.querySelector('#addTextInput');
+export const dictionary = document.querySelector('#dictionary');
+export const containerRuList = document.getElementsByClassName('container ru');
+export const containerTrList = document.getElementsByClassName('container tr');
 addTextInput.focus();
 
 // Добавляет текст в список по кнопке и по Enter
-addTextButton.addEventListener('click', addText);
+addTextButton.addEventListener('click', () => {
+  animationPushButton(addTextButton);
+  addText();
+});
 addTextInput.addEventListener('keydown', (event) => {
   if (event.code === 'Enter') {
     addText();
@@ -14,11 +30,12 @@ addTextInput.addEventListener('keydown', (event) => {
 });
 
 function addText() {
+  // Проверка содержимого input
   const text = addTextInput.value;
   if (text.length === 0) {
     return;
   }
-
+  // Создание элементов
   const { newContainerRu } = createNewContainer();
   const { newContainerTr } = createNewContainer();
   const { elTextRu } = createTextBlocks(text);
@@ -27,118 +44,43 @@ function addText() {
   const { elNumOfRowTr } = createNumOfRow();
   const { elDeleteButtonRu } = createDeleteButton();
   const { elDeleteButtonTr } = createDeleteButton();
-
+  // Заполнение контейнеров
   newContainerRu.appendChild(elNumOfRowRu);
   newContainerRu.appendChild(elTextRu);
   newContainerRu.appendChild(elDeleteButtonRu);
-
   newContainerTr.appendChild(elNumOfRowTr);
   newContainerTr.appendChild(elTextTr);
   newContainerTr.appendChild(elDeleteButtonTr);
-
+  // Добавление контейнеров в таблицу
   dictionary.appendChild(newContainerRu);
   dictionary.appendChild(newContainerTr);
-
+  // Очистка и фокус input
   addTextInput.value = '';
   addTextInput.focus();
-}
-
-// Создает контейнер для новой строки
-function createNewContainer() {
-  const newContainerRu = document.createElement('div');
-  const newContainerTr = document.createElement('div');
-
-  newContainerRu.setAttribute('class', 'container ru');
-  newContainerTr.setAttribute('class', 'container tr');
-
-  return { newContainerRu, newContainerTr };
-}
-
-// Создает блоки с текстом
-function createTextBlocks(text) {
-  const elTextRu = document.createElement('div');
-  const elTextTr = document.createElement('div');
-
-  elTextRu.setAttribute('class', 'word ru');
-  elTextTr.setAttribute('class', 'word tr');
-
-  elTextRu.innerText = text;
-  cropText(elTextRu);
-  addPopUp(elTextRu);
-
-  translit(text).then((result) => {
-    elTextTr.innerText = result;
-    cropText(elTextTr);
-    addPopUp(elTextTr);
-  });
-
-  return { elTextRu, elTextTr };
-}
-
-// Создает блоки с номером строки
-function createNumOfRow() {
-  const elNumOfRowRu = document.createElement('div');
-  const elNumOfRowTr = document.createElement('div');
-
-  elNumOfRowRu.setAttribute('class', 'numOfRow ru');
-  elNumOfRowTr.setAttribute('class', 'numOfRow tr');
-  elNumOfRowRu.innerText = `${containerRuList.length + 1}`;
-  elNumOfRowTr.innerText = `${containerTrList.length + 1}`;
-
-  return { elNumOfRowRu, elNumOfRowTr };
-}
-
-// Создает кнопку удаления строки
-function createDeleteButton() {
-  const elDeleteButtonRu = document.createElement('img');
-
-  elDeleteButtonRu.setAttribute('src', './icons/deleteButton.png');
-  elDeleteButtonRu.setAttribute('alt', 'deleteButton ru');
-  elDeleteButtonRu.setAttribute('class', 'deleteButton ru active');
-
-  elDeleteButtonRu.addEventListener('click', (event) => {
-    addTextInput.focus();
-    event.target.parentElement.nextSibling.remove();
-    event.target.parentElement.remove();
-    for (let i = 0; i < dictionary.childElementCount; i += 1) {
-      document.getElementsByClassName('numOfRow ru')[i].innerText = i + 1;
-      document.getElementsByClassName('numOfRow tr')[i].innerText = i + 1;
-    }
-  });
-
-  const elDeleteButtonTr = document.createElement('img');
-
-  elDeleteButtonTr.setAttribute('src', './icons/deleteButton.png');
-  elDeleteButtonTr.setAttribute('alt', 'deleteButton tr');
-  elDeleteButtonTr.setAttribute('class', 'deleteButton tr active');
-  elDeleteButtonTr.addEventListener('click', (event) => {
-    addTextInput.focus();
-    event.target.parentElement.previousSibling.remove();
-    event.target.parentElement.remove();
-    for (let i = 0; i < dictionary.childElementCount; i += 1) {
-      document.getElementsByClassName('numOfRow ru')[i].innerText = i + 1;
-      document.getElementsByClassName('numOfRow tr')[i].innerText = i + 1;
-    }
-  });
-
-  return { elDeleteButtonRu, elDeleteButtonTr };
+  //
+  animationAddRow(newContainerRu);
+  animationAddRow(newContainerTr);
 }
 
 // Кнопка удаления всех строк
-const deleteAllButton = document.querySelector('#deleteAllButton');
-deleteAllButton.addEventListener('click', () => {
-  document
-    .querySelectorAll('#dictionary .container:not(:first-child) + .ru')
-    .forEach((el) => el.remove());
-  document
-    .querySelectorAll('#dictionary .container:not(:first-child) + .tr')
-    .forEach((el) => el.remove());
+const deleteAllBlock = document.querySelector('#deleteAllBlock');
+deleteAllBlock.addEventListener('click', () => {
   addTextInput.focus();
+  animationPushButton(deleteAllBlock);
+  //
+  const addedTextRu = document.querySelectorAll(
+    '#dictionary .container:not(:first-child) + .ru'
+  );
+  const addedTextTr = document.querySelectorAll(
+    '#dictionary .container:not(:first-child) + .tr'
+  );
+  addedTextRu.forEach((el) => animationDeleteRow(el));
+  addedTextTr.forEach((el) => animationDeleteRow(el));
 });
 
 // Обрезает текст по количеству символов, по умолчанию 7
 // И пишет полный текст в title
-function cropText(input, num = 7) {
+export function cropText(input, num = 7) {
   if (input.innerText.length > num) {
     input.setAttribute('title', `${input.innerText}`);
     input.innerText = `${input.innerText.substring(0, num)}...`;
@@ -151,7 +93,7 @@ const popUp = document.createElement('div');
 popUp.setAttribute('class', 'popUp');
 document.body.appendChild(popUp);
 
-function addPopUp(input) {
+export function addPopUp(input) {
   if (input.getAttribute('title') !== null) {
     input.addEventListener('mouseover', showPopUp);
     input.addEventListener('mouseout', hidePopUp);
@@ -167,7 +109,7 @@ function showPopUp(event) {
     event.target.getBoundingClientRect().bottom +
     32
   }px`;
-  popUp.style.top = 'auto';
+  animationShow(popUp);
 }
 
 function hidePopUp() {
@@ -175,7 +117,7 @@ function hidePopUp() {
 }
 
 // Транслит
-function translit(text) {
+export function translit(text) {
   const arr = text.split('');
   const result = [];
 
